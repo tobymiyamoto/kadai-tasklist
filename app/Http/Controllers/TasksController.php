@@ -43,9 +43,14 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+             {
+        $this->validate($request, [
+            'status' => 'required|max:10',
+        ]);
+        
         $task = new Task;
         $task->content = $request->content;
+        $task->status=$request->status;
         $task->save();
         
         return redirect('/');
@@ -58,6 +63,7 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    
     {
         $task = Task::find($id);
 
@@ -74,8 +80,14 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
+       
+        /**$this->validate($request, [
+            'status' => 'required|max:10',
+        ]);*/
+        
          $task = Task::find($id);
-
+         /**$task->status = $request->status;*/
+         
         return view('tasks.edit', [
             'task' => $task,
               ]);
@@ -90,8 +102,13 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
+       $this->validate($request, [
+            'status' => 'required|max:10',   // 追加
+                  ]);
+        
         $task = Task::find($id);
         $task->content = $request->content;
+        $task->status = $request->status;
         $task->save();
 
         return redirect('/');
