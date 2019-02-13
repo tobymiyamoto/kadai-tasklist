@@ -1,5 +1,11 @@
+<!-- @extends('layouts.app')
+
+@section('content')
+    @include('users.users', ['users' => $users])
+@endsection-->
 
 
+<!-- trait Indexblade { -->
 @extends('layouts.app')
 
 @section('content')
@@ -31,3 +37,4 @@
  {!! link_to_route('tasks.create', '新規タスク', null, ['class' => 'btn btn-primary']) !!}
  
 @endsection
+<!-- }-->

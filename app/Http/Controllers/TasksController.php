@@ -13,22 +13,30 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+     
     public function index()
     {
-        $tasks = Task::all();
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
         
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+            return view('tasks.index', [
+                'tasks' => $tasks,
+            ]);
+        }
+         
+         return view('welcome');
     }
+    
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
+     
     public function create()
-    {
+        {
      $task = new Task;
 
         return view('tasks.create', [
@@ -66,10 +74,14 @@ class TasksController extends Controller
     
     {
         $task = Task::find($id);
-
-        return view('tasks.show', [
-            'task' => $task,
-        ]);
+        if (\Auth::id() === $task->user_id) {
+            return view('tasks.show', [
+                'task' => $task,
+            ]);
+        } else {
+            return redirect('/');
+        }
+        
     }
 
     /**
@@ -107,6 +119,7 @@ class TasksController extends Controller
                   ]);
         
         $task = Task::find($id);
+        
         $task->content = $request->content;
         $task->status = $request->status;
         $task->save();
@@ -124,6 +137,7 @@ class TasksController extends Controller
     public function destroy($id)
         {
         $task = Task::find($id);
+        
         $task->delete();
         
        return redirect('/');
