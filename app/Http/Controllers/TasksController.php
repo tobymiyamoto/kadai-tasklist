@@ -36,14 +36,15 @@ class TasksController extends Controller
      */
      
     public function create()
-        {
-     $task = new Task;
-
-        return view('tasks.create', [
-            'task' => $task,
-        ]);
+    {
+        $task = new Task;
+       
+            return view('tasks.create', [
+                'task' => $task,
+            ]);
+        
     }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -51,17 +52,18 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-             {
+     {
+          $task = new Task();
         $this->validate($request, [
             'status' => 'required|max:10',
+          ]);
+        
+        $request->user()->tasks()->create([
+         'content' => $request->content,
+         'status' => $request->status,
         ]);
         
-        $task = new Task;
-        $task->content = $request->content;
-        $task->status=$request->status;
-        $task->save();
-        
-        return redirect('/');
+       return redirect('/');
     }
 
     /**
@@ -71,8 +73,7 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    
-    {
+        {
         $task = Task::find($id);
         if (\Auth::id() === $task->user_id) {
             return view('tasks.show', [
@@ -80,9 +81,8 @@ class TasksController extends Controller
             ]);
         } else {
             return redirect('/');
+             }
         }
-        
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -92,19 +92,16 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-       
-        /**$this->validate($request, [
-            'status' => 'required|max:10',
-        ]);*/
-        
          $task = Task::find($id);
          /**$task->status = $request->status;*/
-         
+         if (\Auth::id() === $task->user_id) { 
         return view('tasks.edit', [
             'task' => $task,
               ]);
-    }
-
+        }else {
+            return redirect('/');
+            }
+        }
     /**
      * Update the specified resource in storage.
      *
